@@ -1,12 +1,15 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import Navbar from "../src/components/navbar"
+import Main from "../src/components/main"
+import JobList from "../src/components/job-list"
 
 export default function Home() {
   return (
    <div>
      <Navbar />
+     <br />
+     <Main />
+     <br />
+     <JobList />
    </div>
   )
 }
