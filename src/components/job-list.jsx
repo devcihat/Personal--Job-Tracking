@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import SearchBar from "material-ui-search-bar";
+import {useTodoContext} from "../context/app-context"
 
 
 const useStyles = makeStyles({
@@ -18,28 +19,26 @@ const useStyles = makeStyles({
 
 const JobList = () => {
   const classes = useStyles();
+  const {todoList,setTodoList} = useTodoContext()
 
-  const originalRows = [
-    { name: "Pizza", calories: 200 },
-    { name: "Hot Dog", calories: 300 },
-    { name: "Burger", calories: 400 },
-  ];
-
-  const [rows, setRows] = useState(originalRows);
   const [searched, setSearched] = useState("");
 
   const requestSearch = (searchedVal) => {
-    const filteredRows = originalRows.filter((row) => {
+    const filteredRows = todoList.filter((row) => {
       return row.name.toLowerCase().includes(searchedVal.toLowerCase());
     });
-    setRows(filteredRows);
+    setTodoList(filteredRows);
   };
 
   const cancelSearch = () => {
-    setSearched("");
+    setSearched(todoList);
     requestSearch(searched);
   };
 
+  useEffect(() => {
+      const users = JSON.parse(localStorage.getItem('users'))
+        users && users.length > 0 ? setTodoList(users) : ''
+  },[])
   return (
     <>
       <Paper style={{padding:'40px'}}>
@@ -53,20 +52,23 @@ const JobList = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell align="right">Priority</TableCell>
-                <TableCell align="right">Action</TableCell>
+                <TableCell>Priority</TableCell>
+                <TableCell align="right"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                </TableRow>
-              ))}
+              {todoList ? (
+                  todoList.map((row) => (
+                    <TableRow key={row}>
+                      <TableCell component="th" scope="row">
+                        {row.name}
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {row.priority}
+                      </TableCell>
+                    </TableRow>
+                  ))
+              ): null}
             </TableBody>
           </Table>
         </TableContainer>
