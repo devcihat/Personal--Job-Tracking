@@ -23,9 +23,6 @@ const JobList = () => {
     { name: "Pizza", calories: 200 },
     { name: "Hot Dog", calories: 300 },
     { name: "Burger", calories: 400 },
-    { name: "Hamburger", calories: 500 },
-    { name: "Fries", calories: 600 },
-    { name: "Ice Cream", calories: 700 }
   ];
 
   const [rows, setRows] = useState(originalRows);
