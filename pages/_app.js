@@ -1,4 +1,3 @@
-import '../styles/globals.css';
 import AppProvider from '../src/context/app-context';
 
 function MyApp({ Component, pageProps }) {

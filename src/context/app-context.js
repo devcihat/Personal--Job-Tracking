@@ -12,6 +12,11 @@ const AppProvider = ({ children }) => {
         localStorage.setItem('users', JSON.stringify(todoList))
 	};
 
+    const removeTodo = (todoIndex) => {
+        const newList = todoList.filter((_,index) => index !== todoIndex);
+        setTodoList(newList)
+    }
+
    useEffect(() => {
     const Items = JSON.parse(localStorage.getItem('users'));
    },[])
@@ -23,6 +28,7 @@ const AppProvider = ({ children }) => {
 		setTodoList,
 		todoName,
 		setTodoPriority,
+        removeTodo,
 		todoPriority
 	};
 	return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
