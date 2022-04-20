@@ -14,6 +14,16 @@ import {
     IconButton,
   } from "@material-ui/core";
   import DeleteIcon from '@mui/icons-material/Delete';
+  import EditIcon from '@mui/icons-material/Edit';
+  import Typography from '@mui/material/Typography';
+  import Dialog from '@mui/material/Dialog';
+  import DialogActions from '@mui/material/DialogActions';
+  import DialogContent from '@mui/material/DialogContent';
+  import DialogContentText from '@mui/material/DialogContentText';
+  import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import ListItems from "./list"
 
 
 
@@ -25,9 +35,16 @@ const useStyles = makeStyles({
 
 const JobList = () => {
   const classes = useStyles();
-  const {todoList,setTodoList,removeTodo} = useTodoContext()
+  const {todoList,setTodoList,removeTodo,handleEditTodos} = useTodoContext()
 
   const [searched, setSearched] = useState("");
+  const [editPriority,setEditPriority] = useState('')
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (index) => {
+    setOpen(true)
+    handleEditTodos(index)
+  };
+  const handleClose = () => setOpen(false);
 
   const requestSearch = (searchedVal) => {
     const filteredRows = todoList.filter((row) => {
@@ -63,31 +80,61 @@ const JobList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {todoList ? (
-                  todoList.map((row,index) => (
-                    <TableRow
-                    key={index}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right"><Button style={{background:`${row.priority === 'Acil' ? 'red' : row.priority === 'Önemli' ? 'orange' : 'blue'} `,color:'white',padding:'10px',borderRadius:'20px'}} >{row.priority}</Button></TableCell>
-                    <TableCell  align="right">
-                    <IconButton
-                           style={{ color: 'green' }}
-                           onClick={() => handleDelete(item.id)}>
-                           <DeleteIcon />
-                         </IconButton>
-                         <IconButton
-                           style={{ color: 'red' }}
-                           onClick={() => removeTodo(index)}>
-                           <DeleteIcon />
-                         </IconButton>
-                    </TableCell>
-                  </TableRow>
-                  ))
-              ): null}
+                {open ? (
+                    <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                    >
+                     <DialogTitle id="alert-dialog-title">
+          {"Job Edit"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          <TextField 
+                        style={{width:'100%',marginBottom:'20px'}} 
+                        //value={todoName}
+                        //onChange={(e) => setTodoName(e.target.value)}
+                        inputProps={{style: {height: 40}}}
+                        disabled
+                        //style={{width:'100%'}} 
+                        id="standard-basic" 
+                        label="Job Name" 
+                        variant="outlined" />
+          </DialogContentText>
+          <DialogContentText id="alert-dialog-descriptions">
+          <Select
+                    required
+                    style={{height:'56px',width:'100%'}} 
+                    value={editPriority}
+                    native={true}
+                onChange={(e) => setEditPriority(e.target.value)}
+                        label="Priority"
+                    inputProps={{
+                    id: "deviceSource-native-select",
+                    name: "deviceSource"
+                    }}
+                >
+                <option style={{textAlign:'center'}} value={"Acil"}>Acil</option>
+                <option style={{textAlign:'center'}} value={"Önemli"}>Önemli</option>
+                <option style={{textAlign:'center'}} value={"Normal"}>Normal</option>
+                </Select>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button style={{background:'red',padding:'10px',borderRadius:'20px'}} onClick={handleClose}>Cancel</Button>
+          <Button  style={{background:'green',padding:'10px',borderRadius:'20px'}} onClick={handleEditTodos} autoFocus>
+            Save
+          </Button>
+        </DialogActions>
+                </Dialog>
+                ): ''}
+              {
+                todoList && todoList.length > 0 && (
+                    <ListItems items={todoList} handleOpen={handleOpen} removeTodo={removeTodo} />
+                )
+              }
             </TableBody>
           </Table>
         </TableContainer>
